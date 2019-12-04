@@ -1,15 +1,35 @@
+//  assert(!!lastBlock); 内部函数 若值为空 报错跳出
 var assert = require('assert');
+// util负责继承，eventemitter 负责在函数初始化失败时，跳出，详细 文档：util 和 event.md
+// 链接：http://note.youdao.com/noteshare?id=a56510abda88cd5f88ee7ee5da218e29&sub=C7C6CBC443154E5C89B603EA2855575A
 var EventEmitter = require('events');
 var util = require('util');
+// 本地模块 提供slotnumber，即下一个候选节点ID
 var slots = require('./slots');
+// 本地模块 提供协议
 var protocol = require('./protocol');
+// 本地模块 提供Block类
 var Block = require('./block');
+// 本地模块 提供Tx类
 var Transaction = require('./transaction');
+// 本地模块 提供HashKist 类,本质是 BlockChain 内部Chain部分的数据结构 hash链表
 var HashList = require('./hashlist');
+// 本地模块 提供PBFT协议
 var Pbft = require('./pbft');
 
 var COIN = 100000000;
-
+/**
+ * BlockChain 类
+ * 内部成员：
+ *  node 当前节点
+ *  genesis 创世区块
+ *  pendingTransactions 缓存队列
+ *  transactionIndex 交易检索结构体
+ *  chain hash队列
+ *  pbft 协议
+ *  lastSlot 上一个候选节点
+ * @param {*} node 
+ */
 function BlockChain(node) {
   EventEmitter.call(this);
   this.node = node;
@@ -39,7 +59,9 @@ function BlockChain(node) {
 }
 
 util.inherits(BlockChain, EventEmitter);
-
+/**
+ * 开始 1s 1个loop
+ */
 BlockChain.prototype.start = function () {
   var self = this;
   setImmediate(function nextLoop() {
@@ -220,7 +242,15 @@ BlockChain.prototype.makeFork_ = function () {
 
 
 /**
- * 
+ * 获得当前候选节点ID 和 最近一个区块 和 上一个候选节点ID
+ * 如果 两次节点相同 或者 要求出块时间大于5S 跳出
+ * 如果 PBFT flag 且 两次候选一致 跳出
+ * 候选 % 节点数量 = 授权节点ID
+ * 如果本节点为 授权节点（被选中的孩子）
+ *    如果 好节点
+ *        开始主持事务，添加Block，发送 new-message，记录自己是
+ *    不是 好节点
+ *        制造分叉
  */
 BlockChain.prototype.loop_ = function (cb) {
   var currentSlot = slots.getSlotNumber();

@@ -1,9 +1,15 @@
+/**
+ * chain节点结构体
+ * @param {*} data 
+ */
 function ListNode(data) {
   this.next = null;
   this.prev = null;
   this.data = data;
 }
-
+/**
+ * chainList结构体
+ */
 function HashList() {
   this.head_ = null;
   this.tail_ = null;
@@ -11,10 +17,22 @@ function HashList() {
   this.map_ = {};
 }
 
+/**
+ * 返回size
+ */
 HashList.prototype.size = function() {
   return this.size_;
 };
-
+/**
+ * 添加新节点
+ * 如果 链表为空
+ *    添加新节点，头=尾=新节点
+ * 如果 头=尾（长度为1）
+ *    添加新节点，头的下一个为新节点，尾=新节点
+ * 都不是
+ *    正常顶替尾结点
+ * size++
+ */
 HashList.prototype.add = function(key, value) {
   var newNode = new ListNode(value);
   this.map_[key] = newNode;
@@ -31,7 +49,9 @@ HashList.prototype.add = function(key, value) {
   }
   this.size_++;
 };
-
+/**
+ * 通过 hash 寻找 block
+ */
 HashList.prototype.get = function(key) {
   var node = this.map_[key];
   if (node) {
@@ -40,7 +60,9 @@ HashList.prototype.get = function(key) {
     return null;
   }
 };
-
+/**
+ * 删除节点
+ */
 HashList.prototype.remove = function(key) {
   var node = this.map_[key];
   if (node) {
@@ -65,7 +87,9 @@ HashList.prototype.remove = function(key) {
   }
   return null;
 };
-
+/**
+ * 
+ */
 HashList.prototype.pop = function() {
   if (!this.head_) {
     return null;
@@ -81,7 +105,12 @@ HashList.prototype.pop = function() {
     return head.data;
   }
 };
-
+/**
+ * 选择节点返回，node.data
+ * offset int 偏移
+ * limit  int 个数限制
+ * reverse bool 从头还是尾巴
+ */
 HashList.prototype.select = function(offset, limit, reverse) {
   var result = [];
   if (limit <= 0) {
