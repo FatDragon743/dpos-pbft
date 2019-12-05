@@ -1,7 +1,19 @@
 var crypto = require('crypto');
 var ByteBuffer = require('bytebuffer');
 var _ = require('lodash');
-
+/**
+ * Tx 类
+ * 成员变量：
+ *    amount    交易数量
+ *    timestamp 时间戳
+ *    recopient 接受者
+ *    sender    发送者
+ * 成员函数：
+ *    calculateHash 计算hash
+ *    getBytes      toString
+ *    getXX         返回对应XX的成员变量的值
+ * @param {*} data 
+ */
 function Transaction(data) {
   this.data = _.assign({
     amount: 0,

@@ -20,7 +20,7 @@ function HashList() {
 /**
  * 返回size
  */
-HashList.prototype.size = function() {
+HashList.prototype.size = function () {
   return this.size_;
 };
 /**
@@ -33,7 +33,7 @@ HashList.prototype.size = function() {
  *    正常顶替尾结点
  * size++
  */
-HashList.prototype.add = function(key, value) {
+HashList.prototype.add = function (key, value) {
   var newNode = new ListNode(value);
   this.map_[key] = newNode;
   if (this.head_ === null) {
@@ -52,7 +52,7 @@ HashList.prototype.add = function(key, value) {
 /**
  * 通过 hash 寻找 block
  */
-HashList.prototype.get = function(key) {
+HashList.prototype.get = function (key) {
   var node = this.map_[key];
   if (node) {
     return node.data;
@@ -63,7 +63,7 @@ HashList.prototype.get = function(key) {
 /**
  * 删除节点
  */
-HashList.prototype.remove = function(key) {
+HashList.prototype.remove = function (key) {
   var node = this.map_[key];
   if (node) {
     var prev = node.prev;
@@ -88,9 +88,9 @@ HashList.prototype.remove = function(key) {
   return null;
 };
 /**
- * 
+ * pop节点，，，真的用的到吗
  */
-HashList.prototype.pop = function() {
+HashList.prototype.pop = function () {
   if (!this.head_) {
     return null;
   }
@@ -111,7 +111,7 @@ HashList.prototype.pop = function() {
  * limit  int 个数限制
  * reverse bool 从头还是尾巴
  */
-HashList.prototype.select = function(offset, limit, reverse) {
+HashList.prototype.select = function (offset, limit, reverse) {
   var result = [];
   if (limit <= 0) {
     return result;
@@ -137,8 +137,12 @@ HashList.prototype.select = function(offset, limit, reverse) {
   }
   return result;
 };
-
-HashList.prototype.each = function(cb) {
+/**
+ * each  循环节点 callback模式
+ * first 返回head节点
+ * last  返回tail节点
+ */
+HashList.prototype.each = function (cb) {
   var node = this.head_;
   var i = 0;
   while (node) {
@@ -147,14 +151,14 @@ HashList.prototype.each = function(cb) {
   }
 };
 
-HashList.prototype.first = function() {
+HashList.prototype.first = function () {
   if (this.head_) {
     return this.head_.data;
   }
   return null;
 }
 
-HashList.prototype.last = function() {
+HashList.prototype.last = function () {
   if (this.tail_) {
     return this.tail_.data;
   }

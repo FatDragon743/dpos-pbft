@@ -22,7 +22,9 @@ function getEpochTime(time) {
   var t = d.getTime();
   return Math.floor((time - t) / 1000);
 }
-
+/**
+ * 根据时间差，得到 slot_number ,再由 mod 候选人数量，得到PoS 的随机挑选记账节点的功能
+ */
 module.exports = {
   /***
    * 时间间隔 单位为s 每10进行一次
