@@ -6,7 +6,11 @@ var Block = require('./block');
 var Transaction = require('./transaction');
 
 var PORT = 10000;
-
+/**
+ * 初始化节点，节点端口在 10000+i
+ * @param {*} i 
+ * @param {*} isBad 
+ */
 function Node(i, isBad) {
   this.id = i;
   this.isBad = isBad;
@@ -21,7 +25,9 @@ function Node(i, isBad) {
   this.blockchain = new BlockChain(this);
   this.blockchain.on('new-message', this.broadcast.bind(this));
 }
-
+/**
+ * 初始化网络，选择5个随机数，发送消息，写入联系人列表
+ */
 Node.prototype.connect = function() {
   for (var i = 0; i < 5; ++i) {
     var rand = Math.floor(Math.random() * 10);
