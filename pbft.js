@@ -1,16 +1,45 @@
 var assert = require('assert');
 var protocol = require('./protocol');
 var slots = require('./slots');
-
+/**
+ * 候选人数量，即总节点数量
+ */
 var PBFT_N = slots.delegates;
+/**
+ * 可以容忍的作恶节点数量
+ */
 var PBFT_F = Math.floor((PBFT_N - 1) / 3);
-
+/**
+ * 状态码表
+ */
 var State = {
   None: 0,
   Prepare: 1,
   Commit: 2,
 };
-
+/**
+ * Pbft 结构体
+ * 成员变量：
+ *    blockchain        链
+ *    node              节点
+ *    pendingBlocks     缓存Block列表，待确认的区块
+ *    prepareInfo       准备信息
+ *    commitInfos       确认消息
+ *    state             状态
+ *    prepareHashCache  准备hash缓存
+ *    commitHashCache   确认hash缓存
+ *    currentSlot       当前Slot
+ * 成员函数：
+ *    hasBlock          此Block的hash是否已经在pendingBlocks中
+ *    isBusy            state是否等于None
+ *    addBlock          准备操作，根据block信息，写入缓存，并广播区块
+ *    clearState        清空，设置state为None
+ *    commit            确认区块，完成后clearState
+ *    processMessage    处理接收到的Prepare，Commit消息
+ *    
+ *    
+ * @param {*} blockchain 
+ */
 function Pbft(blockchain) {
   this.blockchain = blockchain;
   this.node = blockchain.node;
@@ -22,15 +51,28 @@ function Pbft(blockchain) {
   this.commitHashCache = {};
   this.currentSlot = 0;
 }
-
+/**
+ * block的hash是否存在在pendingBlocks列表中
+ */
 Pbft.prototype.hasBlock = function(hash) {
   return !!this.pendingBlocks[hash];
 }
-
+/**
+ * 当前节点的PBFT是否进入流程，进入为True
+ */
 Pbft.prototype.isBusy = function() {
   return this.state !== State.None;
 }
-
+/**
+ * 添加block进入缓存列表，广播此区块
+ * 当前节点作为主节点的时候调用
+ * 输入：区块，当前轮次=（block的时间戳 - 系统启动时间）/时间间隔（10s）的向下取整
+ * 流程：
+ * 添加block进入pendingBlocks
+ * 检查轮次（正常轮次<=当前轮次），区块是新的
+ * 准备好 准备消息，自己投上一票
+ * 广播 准备消息（出现）
+ */
 Pbft.prototype.addBlock = function(block, slot) {
   var hash = block.getHash();
   console.log('pbft addBlock', this.node.id, hash);
