@@ -107,7 +107,7 @@ BlockChain.prototype.validateBlock = function (block) {
 // 通过 pbft 或者 坏节点 -> 直接将其添加到chain上，且不忙碌
 BlockChain.prototype.addBlock = function (block) {
   if (Flags.pbft && !this.node.isBad) {
-    var slotNumber = slots.getSlotNumber(slots.getTime(block.getTimestamp() * 1000));
+    var slotNumber = slots.getSlotNumber(slots.getTime(block.getTimestamp() * 1000));   
     this.pbft.addBlock(block, slotNumber);
   } else {
     this.commitBlock(block);
@@ -272,6 +272,7 @@ BlockChain.prototype.loop_ = function (cb) {
       this.addBlock(block);
       this.emit('new-message', protocol.blockMessage(block.getData()));
       this.lastSlot = currentSlot;
+      // to do
     } else {
       this.makeFork_();
     }
