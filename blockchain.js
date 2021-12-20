@@ -264,6 +264,7 @@ BlockChain.prototype.loop_ = function (cb) {
   if (Flags.pbft && this.lastSlot === currentSlot) {
     return cb();
   }
+  // dpos
   var delegateId = currentSlot % slots.delegates;
   if (this.node.id === delegateId) {
     if (!this.node.isBad) {
