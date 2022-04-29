@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/sqfasd/dpos-pbft#readme",
   "dependencies": {
-    "async": "^1.5.2",
+    "async": "^2.6.4",
     "bytebuffer": "^5.0.1",
     "commander": "^2.9.0",
     "lodash": "^4.12.0"
